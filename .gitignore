@@ -1,0 +1,3 @@
+# 以下文件被git忽略
+/node_modules
+npm-debug.log

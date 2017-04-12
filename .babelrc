@@ -1,0 +1,4 @@
+{// 为loaders提供额外的设置选项
+    presets: ['es2015'],// babel-preset-es2015打包了es6的特性，编译新增语法
+    plugins: ['transform-runtime']// babel-plugin-transform-runtime插件自动生效babel-runtime，编译新增api
+}
