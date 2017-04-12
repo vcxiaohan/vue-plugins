@@ -210,7 +210,7 @@
 						speedClientY = _clientY;
 
 						SC_inner_top = SC_inner_top>0?SC_inner_top/3:SC_inner_top;
-						SC_inner_top = SC_inner_top<-self.maxScroll?SC_inner_top-(self.ratio?self.style.SC_outer._height:0)-SC_inner_top/3:SC_inner_top;
+						SC_inner_top = SC_inner_top<-self.maxScroll?top+diffY/3:SC_inner_top;
 
 						self.style.SC_inner = Extend({}, self.style.SC_inner, {
 							top: SC_inner_top +'px',
@@ -220,6 +220,8 @@
 
 				// 取消拖动
 				Tool.on(self.el.SC_outer, 'touchend.SC', function(e) {
+					e.preventDefault();// 阻止页面滚动
+					e.stopPropagation();// 阻止事件冒泡
 					Tool.off(this, 'touchmove.SC');
 
 					var SC_inner_top = parseFloat(self.style.SC_inner.top);

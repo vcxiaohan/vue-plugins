@@ -1,11 +1,11 @@
 {
-  "name": "camera",
+  "name": "vue-plugins",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "webpack-dev-server --progress --colors",
+    "dev": "webpack-dev-server --progress --colors --open",
     "build": "webpack --progress --colors"
   },
   "author": "vcxiaohan",

@@ -75,10 +75,10 @@
 		},
 		mounted() {
 			var self = this;
-			setInterval(function() {
+			/*setInterval(function() {
 				self.bScrollTo += 10
 				console.log(self.bScrollTo)
-			}, 500)
+			}, 500)*/
 		},
 		watch: {
 			bScrollTo(newVal, oldVal) {
