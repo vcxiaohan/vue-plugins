@@ -25,6 +25,6 @@ vue2 + vuex2 + webpack2 + ES6 + sass + ejs
 
 # [插件列表](http://v3.faqrobot.org/hvb/vue-plugins/dist/index.html)
 
-#### [滚动条插件-scrollbar](https://github.com/vcxiaohan/vue-plugins/blob/master/scrollbar/README.md)---[demo](http://v3.faqrobot.org/hvb/vue-plugins/dist/scrollbar/demo.html)---完成80%
+#### [滚动条插件-scrollbar](https://github.com/vcxiaohan/vue-plugins/tree/master/scrollbar)---[demo](http://v3.faqrobot.org/hvb/vue-plugins/dist/scrollbar/demo.html)---完成80%
 
 
