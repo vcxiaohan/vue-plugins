@@ -95,15 +95,16 @@
 						break;
 				}
 				return state;
-			}
+			},
 		},
 		watch: {
 			'style.SC_inner'(newVal, oldVal) {// 控制拖动块的top
+				var oldState = this.state;
 				var SC_frontCtn_top = parseFloat(newVal.top)/this.ratio;
 				this.style.SC_frontCtn = Extend({}, this.style.SC_frontCtn, {
 					top: -SC_frontCtn_top +'px',
 				})
-				this.$emit('SC_scroll', this.state, -SC_frontCtn_top);// 滚动回调
+				this.$emit('SC_scroll', -SC_frontCtn_top, this.state, oldState);// 滚动回调
 			},
 			SC_scrollTo(newVal, oldVal) {
 				this.scrollTo(newVal);
@@ -326,12 +327,13 @@
 
 				// 渐隐渐显
 				function fade(type) {
-					var moveArr = [];
+					var moveArr = [],
+						SC_backCtn_opacity = self.style.SC_backCtn.opacity;
 
 					if(type == 'in') {
-						moveArr = [0, 1];
+						moveArr = [SC_backCtn_opacity, 1];
 					}else {
-						moveArr = [1, 0];
+						moveArr = [SC_backCtn_opacity, 0];
 					}
 
 					Move.ease(moveArr, 500, function(v){// 滚动条显示

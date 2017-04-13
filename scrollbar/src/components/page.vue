@@ -66,6 +66,7 @@
 	                	<p>状态：1-位于底部</p>
 	                	<p>状态：2-位于底部以下</p>
 	                	<p class="red">状态-2和2请在手机端模拟</p>
+	                	<p class="red">通过状态变化可以模拟“上拉加载”和“下拉刷新”动作</p>
 	                </div>
                 </div>
 			</div>
@@ -84,7 +85,7 @@
 		},
 		data() {
 			return {
-				bScrollTo: 200,
+				bScrollTo: 100,
 			}
 		},
 		mounted() {
@@ -97,9 +98,27 @@
 		watch: {
 		},
 		methods: {
-			// 滚动回调 state--2-位于顶部以上、-1-位于顶部、0-顶部到底部之间、1-位于底部、2-位于底部以下 top-具体的滚动位置
-			scrollHandler(state, top) {
-				document.querySelector('.ctn').innerHTML += '当前状态：'+ state +'，当前位置：'+ top +'<em class="green">-|-</em>';
+			// 滚动回调 state--2-位于顶部以上、-1-位于顶部、0-顶部到底部之间、1-位于底部、2-位于底部以下 oldState-上一次状态 top-具体的滚动位置
+			scrollHandler(top, state, oldState) {
+				var innerHTML = '';
+				if(state==-1 && oldState==-2) {// 此状态模拟下拉松手刷新动作
+					innerHTML = '<span class="blue">上边界回弹滚动</span><em class="green">-|-</em>';
+				}
+				if(state==-1 && oldState==0) {
+					innerHTML = '<span class="blue">滚动到顶部</span><em class="green">-|-</em>';
+				}
+				if(state==0 && oldState==0) {
+					innerHTML = '正常滚动<em class="green">-|-</em>';
+				}
+				if(state==1 && oldState==0) {// 此状态模拟上拉加载动作
+					innerHTML = '<span class="blue">滚动到底部</span><em class="green">-|-</em>';
+				}
+				if(state==1 && oldState==2) {
+					innerHTML = '<span class="blue">下边界回弹滚动</span><em class="green">-|-</em>';
+				}
+				if(innerHTML) {
+					document.querySelector('.ctn').innerHTML += innerHTML;
+				}
 			}
 		}
 	}
