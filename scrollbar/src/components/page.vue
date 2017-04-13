@@ -27,7 +27,7 @@
 		        </div>
 				<div class="demo">
 					<h2>demo2</h2>
-					<scroll class="bOuter outer" :SC_scrollTo="bScrollTo">
+					<scroll class="bOuter outer" :SC_scrollTo="bScrollTo" @SC_scroll="scrollHandler">
 						<div slot="SC_inner">
 							<div class="bInner inner">
 				                <h3>假如生活欺骗了你</h3>
@@ -49,11 +49,23 @@
 					</scroll>
 	            </div>
 	            <div class="explain">
+	                <button class="toBottom">demo2滚动到底部</button>
+	            </div>
+	            <div class="explain">
                     <h3>demo解释</h3>
                     <p>1. demo1 是最简单的调用示例</p>
                     <p>2. body和demo2 通过写css自定义了滚动条的样式</p>
                     <p>3. demo2 初始位置为200</p>
                     <p>4. 插件可嵌套使用(如：body和demo1、2嵌套使用)</p>
+                </div>
+                <div class="ctn">
+	                <div class="red">
+	                	<p>状态：-2-位于顶部以上</p>
+	                	<p>状态：-1-位于顶部</p>
+	                	<p>状态：0-顶部到底部之间</p>
+	                	<p>状态：1-位于底部</p>
+	                	<p>状态：2-位于底部以下</p>
+	                </div>
                 </div>
 			</div>
 		</div>
@@ -62,6 +74,7 @@
 
 <script>
 	import Vue from 'vue';
+	import Tool from 'js/tool.js';
 	import Scroll from 'scrollbar/src/components/scroll.vue';
 
 	export default {
@@ -75,14 +88,17 @@
 		},
 		mounted() {
 			var self = this;
-			/*setInterval(function() {
-				self.bScrollTo += 10
-				console.log(self.bScrollTo)
-			}, 500)*/
+
+			document.querySelector('.toBottom').addEventListener('click', function() {
+				self.bScrollTo = 'bottom';
+			});
 		},
 		watch: {
-			bScrollTo(newVal, oldVal) {
-				console.log(newVal, oldVal)
+		},
+		methods: {
+			// 滚动回调 state--2-位于顶部以上、-1-位于顶部、0-顶部到底部之间、1-位于底部、2-位于底部以下 top-具体的滚动位置
+			scrollHandler(state, top) {
+				document.querySelector('.ctn').innerHTML += '当前状态：'+ state +'，当前位置：'+ top +'<em class="green">-|-</em>';
 			}
 		}
 	}
@@ -138,7 +154,15 @@
         margin-top: 20px;
         padding: 10px;
     }
-
+    .green {
+        background: green;
+    }
+    .blue {
+        background: blue;
+    }
+    .red {
+        color: red;
+    }
     /* 浏览器自定义样式 BEGIN */
     .bodyOuter>.SC_backCtn_pc {
         width: 6px;

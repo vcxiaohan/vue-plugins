@@ -21,10 +21,12 @@ vue2 + vuex2 + webpack2 + ES6 + sass + ejs
 
 		npm run dev
 
-* 选择查看插件
+* 编译项目(编译后将dist文件夹内的文件上传到服务器即可访问)
+
+		npm run build
 
 # [插件列表](http://v3.faqrobot.org/hvb/vue-plugins/dist/index.html)
 
-#### [滚动条插件-scrollbar](https://github.com/vcxiaohan/vue-plugins/tree/master/scrollbar)---[demo](http://v3.faqrobot.org/hvb/vue-plugins/dist/scrollbar/demo.html)---完成80%
+#### [滚动条插件-scrollbar](https://github.com/vcxiaohan/vue-plugins/tree/master/scrollbar)---[demo](http://v3.faqrobot.org/hvb/vue-plugins/dist/scrollbar/demo.html)---完成98%
 
 

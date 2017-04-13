@@ -1,3 +1,8 @@
+<!-- 
+* vue scrollbar
+* Copyright (c) 2017/4/13 vcxiaohan
+* vcxiaohan@foxmail.com
+ -->
 <template>
 	<div class="SC_outer" v-el="el.SC_outer" :style="style.SC_outer">
 		<div class="SC_inner" v-el="el.SC_inner" :style="style.SC_inner">
@@ -68,6 +73,29 @@
 			ratio() {// [float] 滚动时比率
 				return this.maxScroll/this.maxTop;
 			},
+			state() {// [int] -2-位于顶部以上、-1-位于顶部、0-顶部到底部之间、1-位于底部、2-位于底部以下 top-具体的滚动位置
+				var state = 0,
+					SC_frontCtn_top = -parseFloat(this.style.SC_frontCtn.top);
+
+				switch(true) {
+					case SC_frontCtn_top>0:
+						state = -2;
+						break;
+					case SC_frontCtn_top==0:
+						state = -1;
+						break;
+					case SC_frontCtn_top>-this.maxTop&&SC_frontCtn_top<0:
+						state = 0;
+						break;
+					case SC_frontCtn_top==-this.maxTop:
+						state = 1;
+						break;
+					case SC_frontCtn_top<-this.maxTop:
+						state = 2;
+						break;
+				}
+				return state;
+			}
 		},
 		watch: {
 			'style.SC_inner'(newVal, oldVal) {// 控制拖动块的top
@@ -75,6 +103,10 @@
 				this.style.SC_frontCtn = Extend({}, this.style.SC_frontCtn, {
 					top: -SC_frontCtn_top +'px',
 				})
+				this.$emit('SC_scroll', this.state, -SC_frontCtn_top);// 滚动回调
+			},
+			SC_scrollTo(newVal, oldVal) {
+				this.scrollTo(newVal);
 			}
 		},
 		mounted() {
