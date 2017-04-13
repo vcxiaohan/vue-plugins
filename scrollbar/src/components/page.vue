@@ -59,12 +59,13 @@
                     <p>4. 插件可嵌套使用(如：body和demo1、2嵌套使用)</p>
                 </div>
                 <div class="ctn">
-	                <div class="red">
+	                <div class="blue">
 	                	<p>状态：-2-位于顶部以上</p>
 	                	<p>状态：-1-位于顶部</p>
 	                	<p>状态：0-顶部到底部之间</p>
 	                	<p>状态：1-位于底部</p>
 	                	<p>状态：2-位于底部以下</p>
+	                	<p class="red">状态-2和2请在手机端模拟</p>
 	                </div>
                 </div>
 			</div>
@@ -158,7 +159,7 @@
         background: green;
     }
     .blue {
-        background: blue;
+        color: blue;
     }
     .red {
         color: red;

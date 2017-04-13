@@ -11,6 +11,10 @@ vue2 + vuex2 + webpack2 + ES6 + sass + ejs
 
 	    git clone https://github.com/vcxiaohan/vue-plugins.git  
 
+
+
+* 安装依赖
+
 		npm install
 
 * 安装webpack-dev-server到全局

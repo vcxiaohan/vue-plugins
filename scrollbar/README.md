@@ -2,7 +2,6 @@
 
 #### demo 示例
 1. [http://v3.faqrobot.org/hvb/vue-plugins/dist/scrollbar/demo.html](http://v3.faqrobot.org/hvb/vue-plugins/dist/scrollbar/demo.html)
-2. 没有提供滚动回调，待完善
 
 #### 使用说明
 
