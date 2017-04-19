@@ -3,7 +3,7 @@
 * 每个插件的功能在下方有简单的介绍，具体的使用介绍请查看相关插件内部的README.md
 
 # 技术栈
-vue2 + vuex2 + webpack2 + ES6 + sass + ejs
+vue2 + vuex2 + webpack2 + ES6 + sass + ejs + svg
 
 # 项目运行
 

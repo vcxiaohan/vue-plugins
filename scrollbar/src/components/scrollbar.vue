@@ -419,7 +419,6 @@
 	    top: 0;
 	    right: 2px;
 	    opacity: 0;
-	    background: #000;
 	    background: rgba(0, 0, 0, 0.4);
 	    width: 2px;
 	    border-radius: 20px;
@@ -428,14 +427,13 @@
 	    position: absolute;
 	    top: 0;
 	    cursor: pointer;
-	    background: #fff;
 	    background: rgba(255, 255, 255, 0.75);
 	    width: 2px;
 	    height: 20px;
 	    border-radius: 5px;
-	}
-	.SC_frontCtn:hover {
-	    background: rgba(255, 255, 255, 1);
+	    &:hover {
+	    	background: rgba(255, 255, 255, 1);
+	    }
 	}
 	.SC_backCtn_pc {
 	}
@@ -455,5 +453,5 @@
 	    -ms-user-select: none;/*IE10*/
 	    -khtml-user-select: none;/*早期浏览器*/
 	    user-select: none;
-	};
+	}
 </style>

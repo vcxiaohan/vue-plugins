@@ -1,10 +1,10 @@
 <template>
-	<scroll class="bodyOuter">
+	<scrollbar class="bodyOuter">
 		<div slot="SC_inner">
 			<div class="bodyInner">
 				<div class="demo">
 					<h2>demo1</h2>
-					<scroll class="aOuter outer" SC_scrollTo="top">
+					<scrollbar class="aOuter outer" SC_scrollTo="top">
 						<div slot="SC_inner">
 							<div class="aInner inner">
 				                <h3>假如生活欺骗了你</h3>
@@ -23,11 +23,11 @@
 				                <p>生活欺骗了你，只是为你下一次的路途搬走拌石，生活欺骗了你，只是为了你下一次的重生。那又何必纠结呢？为何不收起你那份受伤的心呢？选择原谅，选择坚强。才会让此刻的你继续前行。那就放手，丢去不必要的烦恼。继续航帆前行。</p>
 				            </div>
 				        </div>
-					</scroll>
+					</scrollbar>
 		        </div>
 				<div class="demo">
 					<h2>demo2</h2>
-					<scroll class="bOuter outer" :SC_scrollTo="bScrollTo" @SC_scroll="scrollHandler">
+					<scrollbar class="bOuter outer" :SC_scrollTo="bScrollTo" @SC_scroll="scrollHandler">
 						<div slot="SC_inner">
 							<div class="bInner inner">
 				                <h3>假如生活欺骗了你</h3>
@@ -46,7 +46,7 @@
 				                <p>生活欺骗了你，只是为你下一次的路途搬走拌石，生活欺骗了你，只是为了你下一次的重生。那又何必纠结呢？为何不收起你那份受伤的心呢？选择原谅，选择坚强。才会让此刻的你继续前行。那就放手，丢去不必要的烦恼。继续航帆前行。</p>
 				            </div>
 				        </div>
-					</scroll>
+					</scrollbar>
 	            </div>
 	            <div class="explain">
 	                <button class="toBottom">demo2滚动到底部</button>
@@ -71,17 +71,17 @@
                 </div>
 			</div>
 		</div>
-	</scroll>
+	</scrollbar>
 </template>
 
 <script>
 	import Vue from 'vue';
 	import Tool from 'js/tool.js';
-	import Scroll from 'scrollbar/src/components/scroll.vue';
+	import Scrollbar from 'scrollbar/src/components/scrollbar.vue';
 
 	export default {
 		components: {
-			'scroll': Scroll,
+			'scrollbar': Scrollbar,
 		},
 		data() {
 			return {

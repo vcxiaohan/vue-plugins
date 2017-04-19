@@ -4,39 +4,80 @@ export default {
 	Tool.on(el, 'mousedown', function() {// 给el绑定一个随机标记的mousedown事件，仅在移除el所有事件时才能清除该绑定事件
 		console.log(1)
 	})
-	Tool.on(el, 'mousedown.a', function() {// 给el绑定一个标记a的mousedown事件
+	Tool.on(el1, el2, ..., 'mousedown.a mouseup.b', function() {// 给所有的元素都绑定2个事件，一个是标记为a的mousedown事件，一个是标记为b的mouseup事件
 		console.log(2)
 	})
 	*/
-	on(el, event, callback) {
-		event = event.match(/([^\.]+)\.*([^\.]*)/);
-		var eventType = event[1],
-			eventMark = event[2];
+	on(/*el, event, callback*/) {
+		var el = [],
+			event = [],
+			callback = null;
 
-		if(!eventMark) {
-			eventMark = (''+ Math.random()).replace('.', '');
+		for(var i=0; i<arguments.length; i++) {
+			switch(this.isType(arguments[i])) {
+				case 'html':
+					el.push(arguments[i]);
+					break;
+				case 'string':
+					event = arguments[i].split(' ');
+					break;
+				case 'function':
+					callback = arguments[i];
+					break;
+			}
 		}
-		if(!this.event) {
-			this.event = {};
-		}
-		this.event[eventMark] = callback;
 
-		el.addEventListener(eventType, this.event[eventMark]);
+		for(var i=0; i<el.length; i++) {
+			for(var j=0; j<event.length; j++) {
+				var _event = event[j].match(/([^\.]+)\.*([^\.]*)/),
+					eventType = _event[1],
+					eventMark = _event[2];
+
+				if(!eventMark) {
+					eventMark = (''+ Math.random()).replace('.', '');
+				}
+				if(!this.event) {
+					this.event = {};
+				}
+				this.event[eventMark] = callback;
+
+				el[i].addEventListener(eventType, this.event[eventMark]);
+			}
+		}
 	},
 	/* 
 	移除事件 (>=ie9)
 	Tool.off(el, 'mousedown')// 移除el绑定的所有mousedown事件
 	Tool.off(el, 'mousedown.a')// 仅移除el绑定的标记是a的mousedown事件
+	Tool.off(el1, el2, ..., 'mousedown.b')// 移除所有元素绑定的标记是b的mousedown事件
 	*/
-	off(el, event) {
-		event = event.match(/([^\.]+)\.*([^\.]*)/);
-		var eventType = event[1],
-			eventMark = event[2];
+	off(/*el, event*/) {
+		var el = [],
+			event = [];
 
-		el.removeEventListener(eventType, this.event[eventMark]);
-		if(!eventMark) {
-			for(var key in this.event) {
-				el.removeEventListener(eventType, this.event[key]);
+		for(var i=0; i<arguments.length; i++) {
+			switch(this.isType(arguments[i])) {
+				case 'html':
+					el.push(arguments[i]);
+					break;
+				case 'string':
+					event = arguments[i].split(' ');
+					break;
+			}
+		}
+
+		for(var i=0; i<el.length; i++) {
+			for(var j=0; j<event.length; j++) {
+				var _event = event[j].match(/([^\.]+)\.*([^\.]*)/),
+					eventType = _event[1],
+					eventMark = _event[2];
+
+				el[i].removeEventListener(eventType, this.event[eventMark]);
+				if(!eventMark) {
+					for(var key in this.event) {
+						el[i].removeEventListener(eventType, this.event[key]);
+					}
+				}
 			}
 		}
 	},
@@ -146,5 +187,20 @@ export default {
 	        }
 	    }
 	    return flag;
-	},
+	},  
+	/*
+    判断类型 array number string date function regexp object boolean null undefined html
+	Tool.isType(document.querySelector('p'), 'html')// true
+	*/
+    isType: function(obj, type) {  
+    	var _type = Object.prototype.toString.call(obj).toLowerCase();
+
+    	if(_type.indexOf('html') + 1) {
+    		_type = 'html';
+    	}else {
+    		_type = _type.replace('[object ', '').replace(']', '');
+    	}
+
+    	return type?_type==type:_type;
+    }, 
 }
