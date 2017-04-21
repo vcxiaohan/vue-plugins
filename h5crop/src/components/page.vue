@@ -1,8 +1,12 @@
 <template>
 	<div>
-		<p class="p1">1</p>
+		<p class="p1">暂未完成</p>
 		<h5crop :isUpload="false"></h5crop>
-		<p class="p2">2</p>
+		<div class="a">
+			<div class="b">
+				<p class="p2">2</p>
+			</div>
+		</div>
 	</div>
 </template>
 

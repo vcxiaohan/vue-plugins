@@ -6,13 +6,14 @@
 <template>
 	<div class="CR_outer">
 		<div class="CR_inputCtn">
+			<div class="CR_cos">选择文件</div>
 			<input class="CR_input" @change="change" v-el="el.CR_input" type="file" />
 		</div>
 		<div class="CR_inner" :style="style.CR_inner">
 			<div class="CR_editCtn">
 				<div class="CR_editHeadCtn">
 					<span>图片裁剪</span>
-					<span class="CR_close">×</span>
+					<span class="CR_close" @click="close">×</span>
 				</div>
 				<div class="CR_editBodyCtn">
 					<div class="CR_cropCtn" v-if="!isUpload">
@@ -21,10 +22,11 @@
 						</div>
 						<div class="CR_cropEditCtn">
 							<span class="CR_reduce">-</span>
-							<span class="CR_slideCtn">
-								<i class="CR_slide" v-el="el.CR_slide"></i>
+							<span class="CR_slideCtn" v-el="el.CR_slideCtn" :style="style.CR_slideCtn">
+								<i class="CR_slide" v-el="el.CR_slide" :style="style.CR_slide"></i>
 							</span>
 							<span class="CR_add">+</span>
+							<span class="CR_save" @click="save">√</span>
 						</div>
 						<div class="CR_cropShowCtn">
 							<canvas class="CR_canvas" v-el="el.CR_canvas" :width="size" :height="size"></canvas>
@@ -55,9 +57,11 @@
 					source: null,// [new Image] 来源
 					width: 0,// [float] 宽度
 					height: 0,// [float] 高度
-					ratio: 0,// [float] 宽高比
-					range: 0,// [float] 放大的范围
+					ratio: 0,// [float] 正常图片和显示图片的缩放比
+					range: 0,// [float] 图片缩放的范围
+					_range: 0,// [float] 滑块缩放的范围
 					type: 0,// [int] 0-size最小 1-size不是最小
+					border: [],// [arr] 4个边是否处于边界位置 0-否 1-是
 				},
 				crop: {// [obj] 定位的数据
 					min: 0,// []
@@ -70,6 +74,7 @@
 					CR_cropImgCtn: 'CR_cropImgCtn',// 显示图片框
 					CR_cropImg: 'CR_cropImg',// 原图片
 					CR_canvas: 'CR_canvas',// canvas
+					CR_slideCtn: 'CR_slideCtn',// 滑块框
 					CR_slide: 'CR_slide',// 滑块
 				},
 				style: {// 样式数据 _代表获取该属性
@@ -79,7 +84,8 @@
 					CR_canvas: {
 					},
 					CR_cropImg: {
-
+					},
+					CR_slide: {
 					},
 				},
 			}
@@ -96,6 +102,7 @@
 		},
 		watch: {
 			files() {
+				console.log(123)
 				this.getImg();
 			},
 		},
@@ -104,17 +111,35 @@
 		},
 		methods: {
 			init() {
+				this.getStyle();
 				this.events();
 				this.$nextTick(function() {
 				})
 			},
 			// 选择文件时
 			change(e) {
+				var display = '';
 				if(this.el.CR_input.files[0]) {// 选择文件后
 					this.files = this.el.CR_input.files;
+					display = 'block';
+				}else {
+					display = 'none';
 				}
 				this.style.CR_inner = Extend({}, this.style.CR_inner, {
-					display: 'block',
+					display: display,
+				})
+			},
+			// 设置样式
+			getStyle() {
+				this.style.CR_slideCtn = Extend({}, this.style.CR_slideCtn, {
+					width: Tool.getStyle(this.el.CR_slideCtn, 'width'),
+				})
+				this.style.CR_slide = Extend({}, this.style.CR_slide, {
+					width: Tool.getStyle(this.el.CR_slide, 'width'),
+					left: Tool.getStyle(this.el.CR_slideCtn, 'width', true) - Tool.getStyle(this.el.CR_slide, 'width', true) +'px',
+				})
+				this.img = Extend({}, this.img, {
+					_range: parseFloat(this.style.CR_slide.left),
 				})
 			},
 			// 显示图片
@@ -135,7 +160,6 @@
 	                            	self.img = Extend({}, self.img, {
 	                            		width: self.img.source.width,
 	                            		height: self.img.source.height,
-										ratio: self.img.source.width/self.img.source.height,
 	                            		type: Math.min(self.img.source.width, self.img.source.height)>self.size?0:1,
 	                            	})
 
@@ -169,9 +193,13 @@
 	                            		width: width +'px',
 	                            		height: height +'px',
 	                            	})
+	                            	// 获取图片缩放比
+	                            	self.img = Extend({}, self.img, {
+										ratio: self.img.width/parseFloat(self.style.CR_cropImg.width),
+	                            	})
+	                				self.getCrop();
 	                            }
 	                            self.img.source.src = e.target.result;
-								self.canvasCtx.drawImage(self.img.source, 0, 0, self.size, self.size);// [图片资源, 开始剪切的x坐标位置, 开始剪切的y坐标位置, 被剪切图像的宽度, 被剪切图像的高度] img转换为canvas，显示canvas
 			                }  
 			            }else {  
 			            }  
@@ -182,24 +210,25 @@
 			events() {
 				var self = this;
 
-				/* pc端 BEGIN */
+				/* 移动 BEGIN */
 				// 按下
-				Tool.on(self.el.CR_cropImgCtn, 'mousedown.CR', function(e) {
+				Tool.on(self.el.CR_cropImgCtn, 'mousedown.CR touchstart.CR', function(e) {
 					Tool.addClass(document.body, 'CR_select_no');
+					var type = e.targetTouches?0:1;
 
-					var clientY = e.clientY,
+					var clientY = type?e.clientY:e.targetTouches[0].pageY,
 						top = parseFloat(self.style.CR_cropImg.top),
 						maxScroll_top = parseFloat(self.style.CR_cropImg.height)-self.size;
-					var clientX = e.clientX,
+					var clientX = type?e.clientX:e.targetTouches[0].pageX,
 						left = parseFloat(self.style.CR_cropImg.left),
 						maxScroll_left = parseFloat(self.style.CR_cropImg.width)-self.size;
 
 					// 拖动
-					Tool.on(document, 'mousemove.CR', function(e) {
-						var _clientY = e.clientY,
+					Tool.on(document, 'mousemove.CR touchmove.CR', function(e) {
+						var _clientY = type?e.clientY:e.targetTouches[0].pageY,
 							diffY = _clientY - clientY,
 							CR_cropImg_top = top + diffY;
-						var _clientX = e.clientX,
+						var _clientX = type?e.clientX:e.targetTouches[0].pageX,
 							diffX = _clientX - clientX,
 							CR_cropImg_left = left + diffX;
 
@@ -207,22 +236,134 @@
 							top: self.getPos(CR_cropImg_top, maxScroll_top) +'px',
 							left: self.getPos(CR_cropImg_left, maxScroll_left) +'px',
 						})
+						self.getBorder();
 					})
 				})
 
+				/* 移动 END */
+
+				/* 缩放 BEGIN */
+				Tool.on(self.el.CR_slide, 'mousedown.CR touchstart.CR', function(e) {
+					Tool.addClass(document.body, 'CR_select_no');
+					var type = e.targetTouches?0:1;
+
+					var clientX = type?e.clientX:e.targetTouches[0].pageX,
+						left = parseFloat(self.style.CR_slide.left),
+						maxScroll_left = parseFloat(self.style.CR_slideCtn.width) - parseFloat(self.style.CR_slide.width);
+
+					var _top = parseFloat(self.style.CR_cropImg.top),
+						_left = parseFloat(self.style.CR_cropImg.left),
+						_width = parseFloat(self.style.CR_cropImg.width),
+						_height = parseFloat(self.style.CR_cropImg.height);
+
+					// 拖动
+					Tool.on(document, 'mousemove.CR touchmove.CR', function(e) {
+						if(self.img.range) {
+							var _clientX = type?e.clientX:e.targetTouches[0].pageX,
+								diffX = _clientX - clientX,
+								CR_slide_left = left + diffX;
+
+							self.style.CR_slide = Extend({}, self.style.CR_slide, {
+								left: self.getPos(CR_slide_left, maxScroll_left, true) +'px',
+							})
+
+							var _CR_slide_left = parseFloat(self.style.CR_slide.left);
+
+							if(_CR_slide_left>0 && _CR_slide_left<maxScroll_left) {
+								self.getBorder();
+								var diffX = self.img.range*diffX/maxScroll_left,
+									diffY = diffX/self.img.width*self.img.height;
+
+								var __top = 0,
+									__left = 0,
+									__width = 0,
+									__height = 0;
+
+								if(self.img.border[0] || (self.img.border[0]&&self.img.border[2])) {// 上
+									__top = 0;
+								}else if(self.img.border[2]) {// 下
+									__top = _top - diffY;
+								}else {// 中间
+									__top = _top - diffY/2;
+								}
+
+								if(self.img.border[3] || (self.img.border[3]&&self.img.border[1])) {// 左
+									__left = 0;
+								}else if(self.img.border[1]) {// 右
+									__left = _left - diffX;
+								}else {// 中间
+									__left = _left - diffX/2;
+								}
+
+								self.style.CR_cropImg = Extend({}, self.style.CR_cropImg, {
+									top: __top +'px',
+									left: __left +'px',
+									width: _width + diffX +'px',
+									height: _height + diffY +'px',
+								})
+							}
+						}
+					})
+				})
+				/* 缩放 END */
+
 				// 取消拖动
-				Tool.on(document, 'mouseup.CR', function(e) {
-					Tool.off(this, 'mousemove.CR');
+				Tool.on(document, 'mouseup.CR touchend.CR', function(e) {
+	                self.getCrop();
+					Tool.off(this, 'mousemove.CR touchmove.CR');
 					Tool.removeClass(document.body, 'CR_select_no');
 				});
-				/* pc端 END */
 			},
 			// 获取规定范围内的位置
-			getPos(pos, maxPos) {
-				pos = pos>0?0:pos;
-				pos = pos<-maxPos?-maxPos:pos;
+			getPos(pos, maxPos, bool) {
+				if(bool) {
+					pos = pos<0?0:pos;
+					pos = pos>maxPos?maxPos:pos;
+				}else {
+					pos = pos>0?0:pos;
+					pos = pos<-maxPos?-maxPos:pos;
+				}
 				return pos;
 			},
+			// 获取裁剪的图片
+			getCrop() {
+				if(this.img.source) {
+					this.canvasCtx.clearRect(0, 0, this.size, this.size);
+					this.canvasCtx.drawImage(
+					this.img.source, 
+					-parseFloat(this.style.CR_cropImg.left)*this.img.ratio,
+					-parseFloat(this.style.CR_cropImg.top)*this.img.ratio,
+					this.img.ratio*this.size, 
+					this.img.ratio*this.size, 
+					0, 0, this.size,  this.size
+					);// [图片资源, 开始剪切的 x 坐标位置, 开始剪切的 y 坐标位置, 被剪切图像的宽度, 被剪切图像的高度, 在画布上放置图像的 x 坐标位置, 在画布上放置图像的 y 坐标位置, 要使用的图像的宽度, 要使用的图像的高度]
+				}
+			},
+			// 获取处于边界时的状态
+			getBorder() {
+				var top = parseFloat(this.style.CR_cropImg.top),
+					left = parseFloat(this.style.CR_cropImg.left),
+					width = parseFloat(this.style.CR_cropImg.width),
+					height = parseFloat(this.style.CR_cropImg.height);
+
+				this.img.border[0] = top<0?0:1;
+				this.img.border[1] = -left+this.size<--width?0:1;
+				this.img.border[2] = -top+this.size<--height?0:1;
+				this.img.border[3] = left<0?0:1;
+			},
+			// 关闭遮罩层
+			close() {
+				this.style.CR_inner = Extend({}, this.style.CR_inner, {
+					display: 'none',
+				})
+				this.el.CR_input.value = null;// 清空文件路径 
+				this.files = [];
+			},
+			// 发送数据
+			save() {
+				// todooooooo
+			},
+
 		},
 		directives: {
 			el: {
@@ -247,6 +388,11 @@
 					if(binding.value == 'CR_canvas') {// canvas
 						self.el = Extend({}, self.el, {
 							CR_canvas: el,
+						})
+					}
+					if(binding.value == 'CR_slideCtn') {// 滑块
+						self.el = Extend({}, self.el, {
+							CR_slideCtn: el,
 						})
 					}
 					if(binding.value == 'CR_slide') {// 滑块
@@ -284,16 +430,36 @@
 	}
 
 	.CR_outer {
-		.CR_inner {
-			@include size($position: fixed);
-		    z-index: 999;
-		    font-size: 14px;
-		    .CR_mask {
-		    	@include size();
-		        background: rgba(0, 0, 0, 0.4);
-		        z-index: 1;
-		    }
+	}
+	.CR_inputCtn {
+		$h: 40px;
+		width: 90px;
+		height: $h;
+		line-height: $h;
+		position: relative;
+		color: #fff;
+		text-align: center;
+		overflow: hidden;
+		.CR_cos {
+			@include size();
+			background: #00b7ee;
+			border-radius: 3px;
 		}
+		.CR_input {
+			display: inline-block;
+			@include size($width: 200%, $height: 200%);
+			opacity: 0;
+		}
+	}
+	.CR_inner {
+		@include size($position: fixed);
+	    z-index: 999;
+	    font-size: 14px;
+	    .CR_mask {
+	    	@include size();
+	        background: rgba(0, 0, 0, 0.4);
+	        z-index: 1;
+	    }
 	}
 	.CR_editCtn {
 		$t: 50%;
@@ -350,6 +516,7 @@
 			$w2: 12px;
 			$h: 2px;
 			$color: #bebebe;
+			$color2: #12B7F5;
 			padding: 0 $CR_editHeadCtn_padding $CR_editHeadCtn_padding;
 			@include clear;
 			font-size: 0;
@@ -358,7 +525,7 @@
 				vertical-align: middle;
 				cursor: pointer;
 			}
-			.CR_reduce, .CR_add {
+			.CR_reduce, .CR_add, .CR_save {
 				width: $w;
 				height: $w;
 				line-height: $w;
@@ -368,8 +535,13 @@
 				border: 1px solid $color;
 				border-radius: 100%;
 			}
+			.CR_save {
+				float: right;
+				color: $color2;
+				border: 1px solid $color2;
+			}
 			.CR_slideCtn {
-				width: 200px;
+				width: 210px;
 				height: $h;
 				margin: 0 10px;
 				background: $color;
@@ -380,7 +552,7 @@
 					top: -($w2+(-$h))/2;
 					width: $w2;
 					height: $w2;
-					background: #12B7F5;
+					background: $color2;
 					border-radius: 100%;
 				}
 			}
@@ -389,7 +561,6 @@
 			position: absolute;
 		    top: 0;
 		    left: 320px;
-		    outline: 1px solid red;
 		}
 	}
 	.CR_uploadCtn {

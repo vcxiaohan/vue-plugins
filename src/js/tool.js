@@ -92,6 +92,31 @@ export default {
 		}
 	},
 	/* 
+	获取相对于父级(非static)的位置
+	*/
+	position(el) {
+		return {
+			top: el.offsetTop,
+			left: el.offsetLeft,
+		}
+    },
+    /* 
+    获取相对于文档的位置
+    */
+	offset(el) {
+        var obj = {
+			top: el.offsetTop,
+			left: el.offsetLeft,
+		},
+		el = el.offsetParent;
+        while(el) {
+            obj.top += el.offsetTop;
+            obj.left += el.offsetLeft;
+            el = el.offsetParent;
+        }
+        return obj;
+    },
+	/* 
 	创建元素
 	createEl('span', {
 		'id': 'a', 
