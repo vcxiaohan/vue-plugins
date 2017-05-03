@@ -16,39 +16,39 @@
 3. 兼容>=ie9、手机端
 4. 模板结构
 
-		<scroll class="bodyOuter" :SC_scrollTo="bScrollTo" @SC_scroll="scrollHandler">
+		<scrollbar class="bodyOuter" :SC_scrollTo="bScrollTo" @SC_scroll="scrollHandler">
 	        <div slot="SC_inner">
 	            <!-- 正文 BEGIN -->
 	            <div class="bodyInner">您的内容</div>
 	            <!-- 正文 END -->
 	        </div>
-	    </scroll>
+	    </scrollbar>
     	
 #### 调用示例
 
 	<template>
 	    <!-- 
-	    1. 直接写 <scroll></scroll> 标签，来使用插件
+	    1. 直接写 <scrollbar></scrollbar> 标签，来使用插件
 	    2. SC_scrollTo-初始位置
 		3. @SC_scroll-绑定滚动时的事件
-		4. scroll 标签里面必须要有一个名称为SC_inner的slot
+		4. scrollbar 标签里面必须要有一个名称为SC_inner的slot
 	    -->
-	    <scroll class="bodyOuter" :SC_scrollTo="bScrollTo" @SC_scroll="scrollHandler">
+	    <scrollbar class="bodyOuter" :SC_scrollTo="bScrollTo" @SC_scroll="scrollHandler">
 	        <div slot="SC_inner">
 	            <!-- 正文 BEGIN -->
 	            <div class="bodyInner">您的内容</div>
 	            <!-- 正文 END -->
 	        </div>
-	    </scroll>
+	    </scrollbar>
 	</template>
 	
 	<script>
 	    import Vue from 'vue';
-	    import Scroll from 'scrollbar/src/components/scroll.vue';// 引入插件
+	    import Scrollbar from 'scrollbar/src/components/scroll.vue';// 引入插件
 	
 	    export default {
 	        components: {
-	            'scroll': Scroll,// 注册组件
+	            'scrollbar': Scrollbar,// 注册组件
 	        },
 	        data() {
 	            return {
