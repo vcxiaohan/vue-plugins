@@ -29,10 +29,10 @@ vue2 + vuex2 + webpack2 + ES6 + sass + ejs + svg
 
 		cnpm run build
 
-# [插件列表](http://v3.faqrobot.org/hvb/vue-plugins/dist/index.html)
+# [插件列表](http://demo.vcxiaohan.com/vue-plugins/dist/index.html)
 
-#### [滚动条插件-scrollbar](https://github.com/vcxiaohan/vue-plugins/tree/master/scrollbar)---[demo](http://v3.faqrobot.org/hvb/vue-plugins/dist/scrollbar/demo.html)---完成98%
+#### [滚动条插件-scrollbar](https://github.com/vcxiaohan/vue-plugins/tree/master/scrollbar)---[demo](http://demo.vcxiaohan.com/vue-plugins/dist/scrollbar/demo.html)---完成98%
 
-#### [裁剪上传插件-h5crop](https://github.com/vcxiaohan/vue-plugins/tree/master/h5crop)---[demo](http://v3.faqrobot.org/hvb/vue-plugins/dist/h5crop/demo.html)---完成70%
+#### [裁剪上传插件-h5crop](https://github.com/vcxiaohan/vue-plugins/tree/master/h5crop)---[demo](http://demo.vcxiaohan.com/vue-plugins/dist/h5crop/demo.html)---完成70%
 
 
