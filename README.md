@@ -15,19 +15,19 @@ vue2 + vuex2 + webpack2 + ES6 + sass + ejs + svg
 
 * 安装依赖
 
-		npm install
+		cnpm install
 
 * 安装webpack-dev-server到全局
 	
-		npm install webpack-dev-server -g
+		cnpm install webpack-dev-server -g
 
 * 启动项目(该命令自动打开[http://localhost:8080/](http://localhost:8080/))
 
-		npm run dev
+		cnpm run dev
 
 * 编译项目(编译后将dist文件夹内的文件上传到服务器即可访问)
 
-		npm run build
+		cnpm run build
 
 # [插件列表](http://v3.faqrobot.org/hvb/vue-plugins/dist/index.html)
 
